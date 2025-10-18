@@ -1,0 +1,30 @@
+C:\Users\marco\OneDrive\Documentos\Compilador PAWN\enoCompilador\bin\Debug\net8.0\enoCompilador.exe
+C:\Users\marco\OneDrive\Documentos\Compilador PAWN\enoCompilador\bin\Debug\net8.0\codigo.txt
+C:\Users\marco\OneDrive\Documentos\Compilador PAWN\enoCompilador\bin\Debug\net8.0\enoCompilador.deps.json
+C:\Users\marco\OneDrive\Documentos\Compilador PAWN\enoCompilador\bin\Debug\net8.0\enoCompilador.runtimeconfig.json
+C:\Users\marco\OneDrive\Documentos\Compilador PAWN\enoCompilador\bin\Debug\net8.0\enoCompilador.dll
+C:\Users\marco\OneDrive\Documentos\Compilador PAWN\enoCompilador\bin\Debug\net8.0\enoCompilador.pdb
+C:\Users\marco\OneDrive\Documentos\Compilador PAWN\enoCompilador\obj\Debug\net8.0\enoCompilador.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\marco\OneDrive\Documentos\Compilador PAWN\enoCompilador\obj\Debug\net8.0\enoCompilador.AssemblyInfoInputs.cache
+C:\Users\marco\OneDrive\Documentos\Compilador PAWN\enoCompilador\obj\Debug\net8.0\enoCompilador.AssemblyInfo.cs
+C:\Users\marco\OneDrive\Documentos\Compilador PAWN\enoCompilador\obj\Debug\net8.0\enoCompilador.csproj.CoreCompileInputs.cache
+C:\Users\marco\OneDrive\Documentos\Compilador PAWN\enoCompilador\obj\Debug\net8.0\enoCompilador.dll
+C:\Users\marco\OneDrive\Documentos\Compilador PAWN\enoCompilador\obj\Debug\net8.0\refint\enoCompilador.dll
+C:\Users\marco\OneDrive\Documentos\Compilador PAWN\enoCompilador\obj\Debug\net8.0\enoCompilador.pdb
+C:\Users\marco\OneDrive\Documentos\Compilador PAWN\enoCompilador\obj\Debug\net8.0\enoCompilador.genruntimeconfig.cache
+C:\Users\marco\OneDrive\Documentos\Compilador PAWN\enoCompilador\obj\Debug\net8.0\ref\enoCompilador.dll
+c:\Users\alana\Downloads\Compilador PAWN2\Compilador PAWN\enoCompilador\bin\Debug\net8.0\enoCompilador.exe
+c:\Users\alana\Downloads\Compilador PAWN2\Compilador PAWN\enoCompilador\bin\Debug\net8.0\codigo.txt
+c:\Users\alana\Downloads\Compilador PAWN2\Compilador PAWN\enoCompilador\bin\Debug\net8.0\enoCompilador.deps.json
+c:\Users\alana\Downloads\Compilador PAWN2\Compilador PAWN\enoCompilador\bin\Debug\net8.0\enoCompilador.runtimeconfig.json
+c:\Users\alana\Downloads\Compilador PAWN2\Compilador PAWN\enoCompilador\bin\Debug\net8.0\enoCompilador.dll
+c:\Users\alana\Downloads\Compilador PAWN2\Compilador PAWN\enoCompilador\bin\Debug\net8.0\enoCompilador.pdb
+c:\Users\alana\Downloads\Compilador PAWN2\Compilador PAWN\enoCompilador\obj\Debug\net8.0\enoCompilador.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\alana\Downloads\Compilador PAWN2\Compilador PAWN\enoCompilador\obj\Debug\net8.0\enoCompilador.AssemblyInfoInputs.cache
+c:\Users\alana\Downloads\Compilador PAWN2\Compilador PAWN\enoCompilador\obj\Debug\net8.0\enoCompilador.AssemblyInfo.cs
+c:\Users\alana\Downloads\Compilador PAWN2\Compilador PAWN\enoCompilador\obj\Debug\net8.0\enoCompilador.csproj.CoreCompileInputs.cache
+c:\Users\alana\Downloads\Compilador PAWN2\Compilador PAWN\enoCompilador\obj\Debug\net8.0\enoCompilador.dll
+c:\Users\alana\Downloads\Compilador PAWN2\Compilador PAWN\enoCompilador\obj\Debug\net8.0\refint\enoCompilador.dll
+c:\Users\alana\Downloads\Compilador PAWN2\Compilador PAWN\enoCompilador\obj\Debug\net8.0\enoCompilador.pdb
+c:\Users\alana\Downloads\Compilador PAWN2\Compilador PAWN\enoCompilador\obj\Debug\net8.0\enoCompilador.genruntimeconfig.cache
+c:\Users\alana\Downloads\Compilador PAWN2\Compilador PAWN\enoCompilador\obj\Debug\net8.0\ref\enoCompilador.dll

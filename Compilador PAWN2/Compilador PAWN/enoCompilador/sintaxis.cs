@@ -1,0 +1,820 @@
+public class Sintaxis
+{
+    Nodo? p;
+    List<string> variablesUsadas = new List<string>();
+    Stack<List<(string nombre, string tipo)>> pilaScopes = new Stack<List<(string nombre, string tipo)>>();
+
+    public Sintaxis(Nodo? cabeza)
+    {
+        p = cabeza;
+    }
+
+    public void programa()
+    {
+        while (p.sig != null)
+        {
+            if (p.token == 201)
+            {
+                p = p.sig;
+
+                if (p.token == 122)
+                {
+                    p = p.sig;
+
+                    pilaScopes.Push(new List<(string nombre, string tipo)>());
+
+                    instrucciones();
+
+                    if (p.token == 207)
+                    {
+                        p = p.sig;
+
+                        if (p.lexema == "0")
+                        {
+                            p = p.sig;
+
+                            if (p.token == 125)
+                            {
+                                p = p.sig;
+
+                                if (p.token == 123)
+                                {
+                                    revisarVariablesNoUsadas();
+                                    pilaScopes.Pop();
+                                    p = p.sig;
+                                    Console.WriteLine("Análisis sintáctico completado correctamente.");
+                                    return;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Error: Se esperaba '}' ");
+                                    error(512);
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Error: Se esperaba ';' ");
+                                error(511);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Error: Se esperaba '0' ");
+                            error(510);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error: Se esperaba 'return' ");
+                        error(509);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Error: Se esperaba '{' ");
+                    error(508);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Error: Se esperaba 'main' ");
+                error(507);
+            }
+        }
+    }
+
+    void declaracion_var()
+    {
+        if (p.token == 202)
+        {
+            p = p.sig;
+            string tipoActual = p.lexema;
+            tipo();
+
+            if (p.token == 100)
+            {
+                var scopeActual = pilaScopes.Peek();
+                if (scopeActual.Any(v => v.nombre == p.lexema))
+                {
+                    Console.WriteLine($"Error: Variable '{p.lexema}' ya declarada en este bloque.");
+                    errorSemantico(5300);
+                }
+                scopeActual.Add((p.lexema, tipoActual));
+                p = p.sig;
+
+                while (p.token == 124)
+                {
+                    p = p.sig;
+
+                    if (p.token == 100)
+                    {
+                        if (scopeActual.Any(v => v.nombre == p.lexema))
+                        {
+                            Console.WriteLine($"Error: Variable '{p.lexema}' ya declarada en este bloque.");
+                            errorSemantico(5300);
+                        }
+                        scopeActual.Add((p.lexema, tipoActual));
+                        p = p.sig;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error: Se esperaba identificador esperado después de ',' ");
+                        error(503);
+                    }
+                }
+
+                if (p.token == 125)
+                {
+                    p = p.sig;
+                }
+                else
+                {
+                    Console.WriteLine("Error: Se esperaba ';' ");
+                    error(502);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Error: Se esperaba identificador ");
+                error(501);
+            }
+        }
+        else
+        {
+            Console.WriteLine("Error: Se esperaba inicio de la declaracion ");
+            error(500);
+        }
+    }
+
+    void tipo()
+    {
+        if (p.token == 203 || p.token == 204 || p.token == 205 || p.token == 206)
+        {
+            p = p.sig;
+        }
+        else
+        {
+            Console.WriteLine("Error: Tipo no valido ");
+            error(504);
+        }
+    }
+
+    void instrucciones()
+    {
+        while (p.token == 202 || esInstruccion(p.token))
+        {
+            if (p.token == 202)
+                declaracion_var();
+            else
+                instruccion();
+        }
+    }
+
+    bool esInstruccion(int token)
+    {
+        return token == 100 || token == 208 || token == 210 || token == 212 || token == 213;
+    }
+
+    void instruccion()
+    {
+        switch (p.token)
+        {
+            case 100:
+                asignacion();
+                break;
+            case 208:
+                if_else();
+                break;
+            case 210:
+                while_do();
+                break;
+            case 212:
+                lectura();
+                break;
+            case 213:
+                escritura();
+                break;
+            default:
+                Console.WriteLine("Error: Instruccion no reconocida ");
+                error(505);
+                break;
+        }
+    }
+
+    void asignacion()
+    {
+        if (p == null || p.token != 100)
+        {
+            Console.WriteLine("Error: Se esperaba identificador ");
+            error(504);
+            return;
+        }
+
+        string nombreVar = p.lexema;
+        string tipoVar = BuscarTipoVariable(nombreVar);
+
+        if (tipoVar == null)
+        {
+            Console.WriteLine($"Error: Variable '{nombreVar}' no declarada.");
+            error(5201);
+            // Saltamos hasta el siguiente ;
+            while (p != null && p.token != 125)
+                p = p.sig;
+            if (p != null && p.token == 125)
+                p = p.sig;
+            return;
+        }
+
+        if (!variablesUsadas.Contains(nombreVar))
+            variablesUsadas.Add(nombreVar);
+
+        p = p.sig;
+
+        if (p == null || p.token != 127) // =
+        {
+            Console.WriteLine("Error: Se esperaba '=' ");
+            error(505);
+            return;
+        }
+
+        p = p.sig;
+
+        // Guardar el primer token de la expresión para reportar errores
+        Nodo nodoExpresion = p;
+
+        // Obtener el tipo de la EXPRESIÓN COMPLETA
+        string tipoExpr = expresion_aritmetica();
+
+        // En este punto, p debería estar EN el ; o PASADO él
+        // Si p está en ;, avanzar
+        if (p != null && p.token == 125) // ;
+        {
+            p = p.sig;
+        }
+
+        // AHORA validar compatibilidad (usar nodoExpresion para reportar)
+        if (!TiposCompatibles(tipoVar, tipoExpr))
+        {
+            Console.WriteLine($"Error: Asignación de tipo incompatible. Variable '{nombreVar}' es '{tipoVar}' y la expresión es '{tipoExpr}'.");
+            Console.WriteLine($"Error semántico en línea '{nodoExpresion.renglon}': 5300 en el lexema '{nodoExpresion.lexema}', token: {nodoExpresion.token}");
+        }
+    }
+
+    string BuscarTipoVariable(string nombre)
+    {
+        foreach (var scope in pilaScopes)
+        {
+            var variable = scope.FirstOrDefault(v => v.nombre == nombre);
+            if (!string.IsNullOrEmpty(variable.nombre))
+                return variable.tipo;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Regla correcta de compatibilidad:
+    /// - int = int ✓
+    /// - float = float ✓
+    /// - float = int ✓ (ampliación: int cabe en float)
+    /// - int = float ✗ (reducción: float NO cabe en int sin pérdida)
+    /// - string/bool no son convertibles
+    /// </summary>
+    bool TiposCompatibles(string tipoVar, string tipoExpr)
+    {
+        // Tipos idénticos siempre son compatibles
+        if (tipoVar == tipoExpr)
+            return true;
+
+        // Ampliación permitida: int → float
+        if (tipoVar == "float" && tipoExpr == "int")
+            return true;
+
+        // Reducción NO permitida: float → int
+        // string y bool no son convertibles
+        return false;
+    }
+
+    bool variableDeclarada(string nombre)
+    {
+        foreach (var scope in pilaScopes)
+        {
+            if (scope.Any(v => v.nombre == nombre))
+                return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Retorna el TIPO de la expresión aritmética completa.
+    /// Valida operaciones entre tipos.
+    /// Si hay error, registra que hubo error en la expresión
+    /// </summary>
+    string expresion_aritmetica()
+    {
+        bool huboError = false;
+        string tipoResultado = Termino();
+
+        while (p != null && (p.token == 104 || p.token == 105)) // + o -
+        {
+            int operador = p.token;
+            Nodo nodoOperador = p; // Guardar referencia al nodo del operador
+            p = p.sig;
+            string tipoSegundo = Termino();
+
+            // Validar operación aritmética (pasando el nodo del operador)
+            string resultado = ValidarOperadorAritmetico(tipoResultado, tipoSegundo, operador, nodoOperador);
+            
+            // Si hubo error en la validación, marcarlo
+            if (resultado == "error")
+            {
+                huboError = true;
+                tipoResultado = "int"; // Default
+            }
+            else
+            {
+                tipoResultado = resultado;
+            }
+        }
+
+        return tipoResultado;
+    }
+
+    /// <summary>
+    /// Valida operaciones aritméticas y retorna el tipo resultante.
+    /// Muestra qué operador se utilizó en caso de error.
+    /// Ahora recibe el nodo del operador para reportar correctamente.
+    /// Retorna "error" si hubo error de tipo
+    /// </summary>
+    string ValidarOperadorAritmetico(string tipoIzq, string tipoDer, int operador, Nodo nodoOperador)
+    {
+        string simboloOperador = ObtenerSimboloOperador(operador);
+
+        // int + int = int
+        if (tipoIzq == "int" && tipoDer == "int")
+            return "int";
+
+        // float + float = float
+        if (tipoIzq == "float" && tipoDer == "float")
+            return "float";
+
+        // int + float = float, o float + int = float (promoción)
+        if ((tipoIzq == "int" && tipoDer == "float") || 
+            (tipoIzq == "float" && tipoDer == "int"))
+            return "float";
+
+        // string + cualquier cosa = ERROR
+        if (tipoIzq == "string" || tipoDer == "string")
+        {
+            Console.WriteLine($"Error: No se puede realizar operación '{simboloOperador}' entre '{tipoIzq}' y '{tipoDer}'");
+            // Usar el nodo del operador para reportar la línea correcta
+            Console.WriteLine($"Error semántico en línea '{nodoOperador.renglon}': 5302 en el lexema '{nodoOperador.lexema}', token: {nodoOperador.token}");
+            return "error"; // Marcar como error
+        }
+
+        // bool + cualquier cosa = ERROR
+        if (tipoIzq == "bool" || tipoDer == "bool")
+        {
+            Console.WriteLine($"Error: No se puede realizar operación '{simboloOperador}' con 'bool'");
+            Console.WriteLine($"Error semántico en línea '{nodoOperador.renglon}': 5303 en el lexema '{nodoOperador.lexema}', token: {nodoOperador.token}");
+            return "error"; // Marcar como error
+        }
+
+        return "int";
+    }
+
+    /// <summary>
+    /// Convierte el token del operador a su símbolo correspondiente.
+    /// </summary>
+    string ObtenerSimboloOperador(int operador)
+    {
+        return operador switch
+        {
+            104 => "+",   // Suma
+            105 => "-",   // Resta
+            106 => "*",   // Multiplicación
+            107 => "/",   // División
+            _ => "?"
+        };
+    }
+
+    /// <summary>
+    /// Retorna el TIPO del término.
+    /// Factor (* /) Factor ...
+    /// Maneja null correctamente
+    /// </summary>
+    string Termino()
+    {
+        string tipoResultado = factor();
+
+        while (p != null && (p.token == 106 || p.token == 107)) // * o /
+        {
+            int operador = p.token;
+            Nodo nodoOperador = p;
+            p = p.sig;
+            
+            if (p == null)
+                return tipoResultado;
+                
+            string tipoSegundo = factor();
+
+            string resultado = ValidarOperadorAritmetico(tipoResultado, tipoSegundo, operador, nodoOperador);
+            
+            if (resultado == "error")
+            {
+                tipoResultado = "int";
+            }
+            else
+            {
+                tipoResultado = resultado;
+            }
+        }
+
+        return tipoResultado;
+    }
+
+    /// <summary>
+    /// Retorna el TIPO del factor.
+    /// Puede ser: variable, número, literal, o (expresión)
+    /// Maneja null correctamente
+    /// </summary>
+    string factor()
+    {
+        if (p == null)
+            return "int"; // Default si alcanzamos el final
+
+        if (p.token == 100) // identificador
+        {
+            if (!variableDeclarada(p.lexema))
+            {
+                Console.WriteLine($"Error: Variable '{p.lexema}' no declarada.");
+                error(5201);
+                p = p.sig;
+                return "int"; // Default
+            }
+            if (!variablesUsadas.Contains(p.lexema))
+                variablesUsadas.Add(p.lexema);
+            
+            string tipoVar = BuscarTipoVariable(p.lexema);
+            p = p.sig;
+            return tipoVar;
+        }
+        else if (p.token == 101) // número entero
+        {
+            p = p.sig;
+            return "int";
+        }
+        else if (p.token == 102) // número flotante
+        {
+            p = p.sig;
+            return "float";
+        }
+        else if (p.token == 103) // string/literal
+        {
+            p = p.sig;
+            return "string";
+        }
+        else if (p.token == 118) // (
+        {
+            p = p.sig;
+            string tipoExpr = expresion_aritmetica();
+
+            if (p != null && p.token == 119) // )
+            {
+                p = p.sig;
+                return tipoExpr;
+            }
+            else
+            {
+                Console.WriteLine("Error: Se esperaba ')' ");
+                error(550);
+                return "int";
+            }
+        }
+        else
+        {
+            Console.WriteLine("Error: Factor no valido ");
+            error(549);
+            return "int";
+        }
+    }
+
+    void if_else()
+    {
+        p = p.sig;
+        if (p.token == 118)
+        {
+            p = p.sig;
+            expresion_condicional();
+
+            if (p.token == 119)
+            {
+                p = p.sig;
+
+                if (p.token == 122)
+                {
+                    p = p.sig;
+                    pilaScopes.Push(new List<(string nombre, string tipo)>());
+                    instrucciones();
+                    revisarVariablesNoUsadas();
+                    pilaScopes.Pop();
+
+                    if (p.token == 123)
+                    {
+                        p = p.sig;
+
+                        if (p.token == 209)
+                        {
+                            p = p.sig;
+
+                            if (p.token == 122)
+                            {
+                                p = p.sig;
+                                pilaScopes.Push(new List<(string nombre, string tipo)>());
+                                instrucciones();
+                                revisarVariablesNoUsadas();
+                                pilaScopes.Pop();
+
+                                if (p.token == 123)
+                                {
+                                    p = p.sig;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Error: Se esperaba '}' ");
+                                    error(524);
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Error: Se esperaba '{' ");
+                                error(523);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error: Se esperaba '}' ");
+                        error(522);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Error: Se esperaba '{' ");
+                    error(521);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Error: Se esperaba ')' ");
+                error(520);
+            }
+        }
+        else
+        {
+            Console.WriteLine("Error: Se esperaba '(' ");
+            error(519);
+        }
+    }
+
+    void while_do()
+    {
+        p = p.sig;
+
+        if (p.token == 118)
+        {
+            p = p.sig;
+            expresion_condicional();
+
+            if (p.token == 119)
+            {
+                p = p.sig;
+
+                if (p.token == 122)
+                {
+                    p = p.sig;
+                    pilaScopes.Push(new List<(string nombre, string tipo)>());
+                    instrucciones();
+                    revisarVariablesNoUsadas();
+                    pilaScopes.Pop();
+
+                    if (p.token == 123)
+                    {
+                        p = p.sig;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error: Se esperaba '}' ");
+                        error(527);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Error: Se esperaba '{' ");
+                    error(526);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Error: Se esperaba ')'");
+                error(525);
+            }
+        }
+        else
+        {
+            Console.WriteLine("Error: Se esperaba '(' ");
+            error(524);
+        }
+    }
+
+    void expresion_condicional()
+    {
+        Nodo? backup = p;
+        try
+        {
+            expresion_comparacion();
+        }
+        catch
+        {
+            p = backup;
+            expresion_logica();
+        }
+    }
+
+    void expresion_logica()
+    {
+        expresion_logica_simple();
+
+        while (p.token == 115 || p.token == 116)
+        {
+            p = p.sig;
+            expresion_logica_simple();
+        }
+    }
+
+    void expresion_logica_simple()
+    {
+        if (p.token == 117)
+        {
+            p = p.sig;
+            expresion_logica_simple();
+        }
+        else if (p.token == 118)
+        {
+            p = p.sig;
+            expresion_logica();
+
+            if (p.token == 119)
+            {
+                p = p.sig;
+            }
+            else
+            {
+                Console.WriteLine("Error: Se esperaba ')' ");
+                error(530);
+            }
+        }
+        else
+        {
+            expresion_comparacion();
+        }
+    }
+
+    void expresion_comparacion()
+    {
+        expresion_aritmetica();
+
+        if (p.token == 109 || p.token == 110 || p.token == 112 ||
+            p.token == 113 || p.token == 114 || p.token == 111)
+        {
+            p = p.sig;
+            expresion_aritmetica();
+        }
+        else
+        {
+            Console.WriteLine("Error: Se esperaba operador relacional");
+            error(531);
+        }
+    }
+
+    void lectura()
+    {
+        p = p.sig;
+
+        if (p.token == 118)
+        {
+            p = p.sig;
+
+            if (p.token == 128)
+            {
+                p = p.sig;
+
+                if (p.token == 100)
+                {
+                    if (!variableDeclarada(p.lexema))
+                    {
+                        Console.WriteLine($"Error: Variable '{p.lexema}' no declarada.");
+                        error(5201);
+                    }
+                    if (!variablesUsadas.Contains(p.lexema))
+                        variablesUsadas.Add(p.lexema);
+
+                    p = p.sig;
+
+                    if (p.token == 119)
+                    {
+                        p = p.sig;
+
+                        if (p.token == 125)
+                        {
+                            p = p.sig;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Error: Se esperaba ';' ");
+                            error(540);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error: Se esperaba ')' ");
+                        error(539);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Error: Se esperaba identificador ");
+                    error(538);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Error: Se esperaba '&' ");
+                error(537);
+            }
+        }
+        else
+        {
+            Console.WriteLine("Error: Se esperaba '(' ");
+            error(536);
+        }
+    }
+
+    void escritura()
+    {
+        p = p.sig;
+
+        if (p.token == 118)
+        {
+            p = p.sig;
+            expresion_aritmetica();
+
+            if (p.token == 119)
+            {
+                p = p.sig;
+
+                if (p.token == 125)
+                {
+                    p = p.sig;
+                }
+                else
+                {
+                    Console.WriteLine("Error: Se esperaba ';' ");
+                    error(535);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Error: Se esperaba ')' ");
+                error(534);
+
+            }
+        }
+        else
+        {
+            Console.WriteLine("Error: Se esperaba '(' ");
+            error(533);
+        }
+    }
+
+    void error(int codigo)
+    {
+        Console.WriteLine($"Error sintáctico linea '{p.renglon}': {codigo} en el lexema '{p.lexema}', token: {p.token}");
+    }
+
+    void errorSemantico(int codigo)
+    {
+        Console.WriteLine($"Error semántico linea '{p.renglon}': {codigo} en el lexema '{p.lexema}', token: {p.token}");
+    }
+
+    public void revisarVariablesNoUsadas()
+    {
+        var scopeActual = pilaScopes.Peek();
+        foreach (var variable in scopeActual)
+        {
+            if (!variablesUsadas.Contains(variable.nombre))
+            {
+                Console.WriteLine($"Advertencia: Variable '{variable.nombre}' declarada pero no usada.");
+            }
+        }
+    }
+}

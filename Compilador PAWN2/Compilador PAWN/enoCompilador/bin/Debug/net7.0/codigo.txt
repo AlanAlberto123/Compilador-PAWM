@@ -1,0 +1,51 @@
+main
+{
+	new int edad, numero, suma; // Variables para almacenar datos de entrada y resultados 
+	new float precio;
+	new float precio;
+	new bool esValido;
+	new string nombre;
+
+	/* Solicitar al usuario su nombre y leer la entrada */
+	print("Introduce tu nombre: ");
+	scanf(&nombre);
+
+	/* Solicitar al usuario su edad y leer la entrada */
+	print("Introduce tu edad: ");
+	scanf(&edad);
+	if (edad >= 18) {
+		print("Eres adulto.\n");
+	} else {
+		print("Eres menor de edad.\n");
+	}
+
+	print("Introduce un número: ");
+	scanf(&numero);
+
+	suma = numero + 10;
+
+	print("El número más 10 es: ");
+	print(suma);
+
+	print("Introduce un límite para contar: ");
+	scanf(&limite);
+
+	/* Estructura de control: while-do con expresión lógica y aritmética */
+	while ((numero + suma) > limite) {
+		print("La suma de numero y suma es mayor que el límite: ");
+		print(numero + suma);
+
+	numero = numero - 1;
+
+	}
+	/* 0 representa un valor falso y un numero mayor a 0 representa un valor verdadero */
+	esValido = 0;
+
+	if (esValido != 0) {
+		print("El precio es válido.\n");
+	} else {
+		print("El precio no es válido.\n");
+	}
+
+	return 0;
+}

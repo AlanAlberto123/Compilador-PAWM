@@ -1,0 +1,43 @@
+main {
+    new int x;
+    x = "ErrorDeTipo";
+    
+    return 0;
+}
+
+/*
+main {
+    new int x;
+    new float y;
+    new string z;
+    
+    x = 10;
+    y = 3.14;
+    z = "hola";
+    
+    return 0;
+}
+
+main {
+    new int x;
+    x = "ErrorDeTipo";
+    
+    return 0;
+}
+
+main {
+    new int x, y, x;
+    x = 5;
+    
+    return 0;
+}
+
+main {
+    new float x;
+    x = 5;
+    
+    return 0;
+}
+*/
+
+

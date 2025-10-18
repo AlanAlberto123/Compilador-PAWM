@@ -1,0 +1,27 @@
+main {
+    new int entero;         
+    new float flotante;     
+    new string texto;       
+    
+    entero = 10;            
+    flotante = 3.14;        
+    texto = "hola";         
+    
+    entero = "ErrorDeTipo"; 
+
+    flotante = "ErrorDeTipo2";
+
+    // ERROR 1: Suma incompatible - string + int
+    entero = texto + 5;     
+    
+    // ERROR 2: Resta incompatible - string - float
+    flotante = texto - 2.5; 
+    
+    // ERROR 3: Multiplicación incompatible - string * int
+    entero = texto * 3;     
+    
+    // ERROR 4: División incompatible - string / (no importa)
+    flotante = entero / texto; 
+    
+    return 0;
+}

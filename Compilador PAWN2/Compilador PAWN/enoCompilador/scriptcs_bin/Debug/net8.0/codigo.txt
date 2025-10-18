@@ -1,0 +1,11 @@
+main
+{
+    new int x, y, x;      // Error: variable 'x' duplicada
+    x = 5;
+    if (x > 0) {
+        new int z;
+        z = x + w;        // Error: variable 'w' no declarada
+    }
+    new int sinUso;       // Advertencia: variable 'sinUso' declarada pero no usada
+    return 0;
+}

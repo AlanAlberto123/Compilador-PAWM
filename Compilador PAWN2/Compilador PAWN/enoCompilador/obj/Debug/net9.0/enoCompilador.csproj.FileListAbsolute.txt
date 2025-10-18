@@ -1,0 +1,15 @@
+C:\Users\carlo_flpli8n\Desktop\Escuela\Semestre 6\Leng y aut 1\Proyecto\Compilador2\enoCompilador\obj\Debug\net9.0\enoCompilador.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\carlo_flpli8n\Desktop\Escuela\Semestre 6\Leng y aut 1\Proyecto\Compilador2\enoCompilador\obj\Debug\net9.0\enoCompilador.AssemblyInfoInputs.cache
+C:\Users\carlo_flpli8n\Desktop\Escuela\Semestre 6\Leng y aut 1\Proyecto\Compilador2\enoCompilador\obj\Debug\net9.0\enoCompilador.AssemblyInfo.cs
+C:\Users\carlo_flpli8n\Desktop\Escuela\Semestre 6\Leng y aut 1\Proyecto\Compilador2\enoCompilador\obj\Debug\net9.0\enoCompilador.csproj.CoreCompileInputs.cache
+C:\Users\carlo_flpli8n\Desktop\Escuela\Semestre 6\Leng y aut 1\Proyecto\Compilador2\enoCompilador\bin\Debug\net9.0\enoCompilador.exe
+C:\Users\carlo_flpli8n\Desktop\Escuela\Semestre 6\Leng y aut 1\Proyecto\Compilador2\enoCompilador\bin\Debug\net9.0\codigo.txt
+C:\Users\carlo_flpli8n\Desktop\Escuela\Semestre 6\Leng y aut 1\Proyecto\Compilador2\enoCompilador\bin\Debug\net9.0\enoCompilador.deps.json
+C:\Users\carlo_flpli8n\Desktop\Escuela\Semestre 6\Leng y aut 1\Proyecto\Compilador2\enoCompilador\bin\Debug\net9.0\enoCompilador.runtimeconfig.json
+C:\Users\carlo_flpli8n\Desktop\Escuela\Semestre 6\Leng y aut 1\Proyecto\Compilador2\enoCompilador\bin\Debug\net9.0\enoCompilador.dll
+C:\Users\carlo_flpli8n\Desktop\Escuela\Semestre 6\Leng y aut 1\Proyecto\Compilador2\enoCompilador\bin\Debug\net9.0\enoCompilador.pdb
+C:\Users\carlo_flpli8n\Desktop\Escuela\Semestre 6\Leng y aut 1\Proyecto\Compilador2\enoCompilador\obj\Debug\net9.0\enoCompilador.dll
+C:\Users\carlo_flpli8n\Desktop\Escuela\Semestre 6\Leng y aut 1\Proyecto\Compilador2\enoCompilador\obj\Debug\net9.0\refint\enoCompilador.dll
+C:\Users\carlo_flpli8n\Desktop\Escuela\Semestre 6\Leng y aut 1\Proyecto\Compilador2\enoCompilador\obj\Debug\net9.0\enoCompilador.pdb
+C:\Users\carlo_flpli8n\Desktop\Escuela\Semestre 6\Leng y aut 1\Proyecto\Compilador2\enoCompilador\obj\Debug\net9.0\enoCompilador.genruntimeconfig.cache
+C:\Users\carlo_flpli8n\Desktop\Escuela\Semestre 6\Leng y aut 1\Proyecto\Compilador2\enoCompilador\obj\Debug\net9.0\ref\enoCompilador.dll
